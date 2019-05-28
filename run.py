@@ -1,19 +1,24 @@
 from robot import Robot
-from environment import Shelf
+from environment import *
 import pygame
 
+
+pos = constants.get('robot_base')
+
 if __name__ == '__main__':
-    rob = [Robot((20, 380)), Robot((70, 20)), Robot((220, 20))]
-    env = [Shelf((20, 200)),  Shelf((120, 200)),  Shelf((220, 200)),  Shelf((320, 200)),  Shelf((420, 200)), Shelf((520, 200))]
+    rob = [Robot(1, pos[0], pos[1]), Robot(2, pos[0], pos[1]), Robot(3, pos[0], pos[1])]
+    env = [Shelf(1, 20, 200), Shelf(2, 120, 200), Shelf(3, 220, 200), Shelf(4, 320, 200), Shelf(5, 420, 200), Shelf(6, 520, 200)]
+    charging_points = [ChargingPoint(1, 700, 30), ChargingPoint(2, 700, 120), ChargingPoint(4, 700, 220), ChargingPoint(5, 700, 320)]
+    unload_points = [UnloadPoint(40, 550), UnloadPoint(140, 550), UnloadPoint(240, 550), UnloadPoint(340, 550), UnloadPoint(440, 550)]
     pygame.init()
     pygame.display.set_caption("Symulacja")
-    window_width = 600
-    window_height = 400
+    window_width = 800
+    window_height = 600
     screen = pygame.display.set_mode((window_width, window_height))
 
     v = 0.5
     exit = False
-    dir = [v,0]
+    dir = [v, 0]
     dir1 = [v, 0]
     dir2 = [0, v]
     while not exit:
@@ -22,31 +27,18 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 exit = True
 
-        screen.fill((0, 0, 0))
+        screen.fill(constants.get('screen_color'))
         for x in rob:
             x.draw(screen)
         for x in env:
             x.draw(screen)
-        rob[2].move(dir[0], dir[1])
-        robPos = rob[2].getPosition()
-        if robPos[0] > 570:
-            dir = [-v, 0]
-        elif robPos[0] < 170:
-            dir = [v, 0]
-
-        rob[0].move(dir1[0], dir1[1])
-        robPos = rob[0].getPosition()
-        if robPos[0] > 570:
-            dir1 = [-v, 0]
-        elif robPos[0] < 20:
-            dir1 = [v, 0]
-
-        rob[1].move(dir2[0], dir2[1])
-        robPos = rob[1].getPosition()
-        if robPos[1] > 370:
-            dir2 = [0, -v]
-        elif robPos[1] < 20:
-            dir2 = [0, v]
+        for x in charging_points:
+            x.draw(screen)
+        for x in unload_points:
+            x.draw(screen)
+        rob[0].move_forward()
+        rob[1].move_back()
+        rob[2].move_left()
 
         pygame.display.flip()
 
